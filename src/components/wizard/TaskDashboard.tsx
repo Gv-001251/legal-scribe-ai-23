@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { useMockDocumentVerification } from '@/hooks/useMockDocumentVerification';
+import { VerificationResultsDetailed } from './VerificationResultsDetailed';
 import type { DocumentType, UploadedFile } from '../DocumentWizard';
 
 interface TaskDashboardProps {
@@ -55,65 +57,77 @@ export const TaskDashboard = ({ documentType, uploadedFile, onBack }: TaskDashbo
     chat: { status: 'pending' },
   });
   const [chatMessage, setChatMessage] = useState('');
-  const [chatHistory, setChatHistory] = useState<Array<{ role: 'user' | 'ai'; message: string }>>([]);
+  
+  // Use the mock document verification hook
+  const {
+    isLoading,
+    error,
+    verificationResult,
+    alterabilityResult,
+    chatHistory,
+    verifyDocument,
+    analyzeAlterability,
+    sendChatMessage,
+    clearError,
+    resetResults,
+    clearChatHistory,
+  } = useMockDocumentVerification();
 
   const runTask = async (taskId: TaskType) => {
+    if (!uploadedFile) {
+      console.error('No file uploaded');
+      return;
+    }
+
     setActiveTask(taskId);
     setTaskResults(prev => ({
       ...prev,
       [taskId]: { status: 'processing' }
     }));
 
-    // Simulate AI processing
-    setTimeout(() => {
-      const mockResults = {
-        verify: {
-          status: 'completed' as const,
-          data: {
-            isValid: true,
-            score: 95,
-            issues: ['Missing witness signature on page 3'],
-            summary: 'Document appears to be valid with minor formatting issues.'
-          }
-        },
-        analyze: {
-          status: 'completed' as const,
-          data: {
-            alterabilityRisk: 'Low',
-            confidence: 88,
-            findings: ['Consistent font usage', 'No text insertion detected', 'Original PDF metadata intact'],
-            summary: 'Low risk of alteration detected. Document appears authentic.'
-          }
-        },
-        chat: { status: 'completed' as const }
-      };
-
+    try {
+      clearError();
+      
+      if (taskId === 'verify') {
+        console.log('Starting document verification...');
+        await verifyDocument(uploadedFile as any, documentType || 'other');
+        console.log('Document verification completed');
+        setTaskResults(prev => ({
+          ...prev,
+          [taskId]: { status: 'completed' }
+        }));
+      } else if (taskId === 'analyze') {
+        console.log('Starting alterability analysis...');
+        await analyzeAlterability(uploadedFile as any);
+        console.log('Alterability analysis completed');
+        setTaskResults(prev => ({
+          ...prev,
+          [taskId]: { status: 'completed' }
+        }));
+      } else if (taskId === 'chat') {
+        setTaskResults(prev => ({
+          ...prev,
+          [taskId]: { status: 'completed' }
+        }));
+      }
+    } catch (err) {
+      console.error(`Task ${taskId} failed:`, err);
       setTaskResults(prev => ({
         ...prev,
-        [taskId]: mockResults[taskId]
+        [taskId]: { status: 'error' }
       }));
-    }, 2000);
+    }
   };
 
-  const handleChatSubmit = () => {
-    if (!chatMessage.trim()) return;
+  const handleChatSubmit = async () => {
+    if (!chatMessage.trim() || !uploadedFile) return;
 
-    setChatHistory(prev => [...prev, { role: 'user', message: chatMessage }]);
-    
-    // Simulate AI response
-    setTimeout(() => {
-      const responses = [
-        "Based on your document, this clause means that...",
-        "The legal implications of this section include...",
-        "This type of agreement typically requires...",
-        "According to standard legal practice..."
-      ];
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-      
-      setChatHistory(prev => [...prev, { role: 'ai', message: randomResponse }]);
-    }, 1000);
-
-    setChatMessage('');
+    try {
+      await sendChatMessage(uploadedFile as any, chatMessage);
+      setChatMessage('');
+    } catch (err) {
+      console.error('Chat submission failed:', err);
+    }
   };
 
   const getStatusIcon = (status: TaskResult['status']) => {
@@ -165,6 +179,12 @@ export const TaskDashboard = ({ documentType, uploadedFile, onBack }: TaskDashbo
             File: <span className="font-medium">{uploadedFile.name}</span>
           </p>
         )}
+        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800">
+            <strong>Demo Mode:</strong> This is a demonstration using simulated AI analysis. 
+            Results are generated based on your document name and type for testing purposes.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -215,31 +235,86 @@ export const TaskDashboard = ({ documentType, uploadedFile, onBack }: TaskDashbo
         })}
       </div>
 
+      {/* Verification Results */}
+      {(activeTask === 'verify' || activeTask === 'analyze') && (verificationResult || alterabilityResult || isLoading || error) && (
+        <div className="mb-6">
+          <VerificationResultsDetailed
+            verificationResult={verificationResult}
+            alterabilityResult={alterabilityResult}
+            isLoading={isLoading}
+            error={error}
+            activeTask={activeTask}
+          />
+        </div>
+      )}
+
       {/* Chat Interface */}
       {activeTask === 'chat' && taskResults.chat.status === 'completed' && (
         <Card className="p-6 mb-6">
-          <h3 className="font-semibold text-foreground mb-4">Chat with AI Assistant</h3>
+          <div className="flex items-center space-x-2 mb-4">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <MessageCircle className="w-5 h-5 text-primary" />
+            </div>
+            <h3 className="font-semibold text-foreground">AI Legal Assistant</h3>
+            <Badge variant="secondary" className="ml-auto">Online</Badge>
+          </div>
           
-          <div className="h-64 overflow-y-auto border rounded-lg p-4 mb-4 bg-muted/30">
+          <div className="h-80 overflow-y-auto border rounded-lg p-4 mb-4 bg-muted/30">
             {chatHistory.length === 0 ? (
-              <p className="text-muted-foreground text-center">
-                Ask me anything about your document...
-              </p>
+              <div className="text-center space-y-4">
+                <div className="p-4 bg-primary/5 rounded-lg">
+                  <p className="text-muted-foreground mb-2">
+                    👋 Hi! I'm your AI Legal Assistant. I can help you understand your document.
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Try asking me about:
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-2 justify-center">
+                    <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded">What does this document mean?</span>
+                    <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded">Explain the clauses</span>
+                    <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded">Legal implications</span>
+                    <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded">Risks and obligations</span>
+                  </div>
+                </div>
+              </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {chatHistory.map((chat, index) => (
                   <div
                     key={index}
                     className={cn(
-                      "p-3 rounded-lg max-w-[80%]",
-                      chat.role === 'user'
-                        ? "bg-primary text-primary-foreground ml-auto"
-                        : "bg-card border"
+                      "flex",
+                      chat.role === 'user' ? "justify-end" : "justify-start"
                     )}
                   >
-                    <p className="text-sm">{chat.message}</p>
+                    <div
+                      className={cn(
+                        "p-3 rounded-lg max-w-[80%]",
+                        chat.role === 'user'
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-card border shadow-sm"
+                      )}
+                    >
+                      {chat.role === 'ai' && (
+                        <div className="flex items-center space-x-2 mb-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-xs text-muted-foreground">AI Assistant</span>
+                        </div>
+                      )}
+                      <p className="text-sm leading-relaxed">{chat.message}</p>
+                    </div>
                   </div>
                 ))}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-card border shadow-sm p-3 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span className="text-xs text-muted-foreground">AI is typing...</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -248,13 +323,27 @@ export const TaskDashboard = ({ documentType, uploadedFile, onBack }: TaskDashbo
             <Textarea
               value={chatMessage}
               onChange={(e) => setChatMessage(e.target.value)}
-              placeholder="Ask about clauses, legal terms, or document details..."
+              placeholder="Ask about clauses, legal terms, risks, obligations, or any document details..."
               className="flex-1"
               rows={2}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleChatSubmit();
+                }
+              }}
             />
-            <Button onClick={handleChatSubmit} disabled={!chatMessage.trim()}>
-              Send
+            <Button 
+              onClick={handleChatSubmit} 
+              disabled={!chatMessage.trim() || isLoading}
+              className="px-6"
+            >
+              {isLoading ? 'Sending...' : 'Send'}
             </Button>
+          </div>
+          
+          <div className="mt-3 text-xs text-muted-foreground text-center">
+            💡 Tip: Ask specific questions like "What are my obligations?" or "Explain the termination clause"
           </div>
         </Card>
       )}

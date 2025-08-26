@@ -21,7 +21,7 @@ export const ContactSection = () => {
               <Mail className="w-6 h-6 text-primary" />
             </div>
             <h3 className="font-semibold text-foreground mb-2">Email</h3>
-            <p className="text-muted-foreground">support@legaldoc.ai</p>
+            <p className="text-muted-foreground">leagaldocreader.com</p>
           </Card>
 
           <Card className="p-6 text-center">
@@ -29,7 +29,7 @@ export const ContactSection = () => {
               <Phone className="w-6 h-6 text-primary" />
             </div>
             <h3 className="font-semibold text-foreground mb-2">Phone</h3>
-            <p className="text-muted-foreground">+1 (555) 123-4567</p>
+            <p className="text-muted-foreground">+91 8056315859</p>
           </Card>
 
           <Card className="p-6 text-center">
@@ -37,7 +37,7 @@ export const ContactSection = () => {
               <MapPin className="w-6 h-6 text-primary" />
             </div>
             <h3 className="font-semibold text-foreground mb-2">Office</h3>
-            <p className="text-muted-foreground">San Francisco, CA</p>
+            <p className="text-muted-foreground">Coimbatore, TN, IND</p>
           </Card>
         </div>
       </div>

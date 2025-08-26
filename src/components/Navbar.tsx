@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { User, LogOut } from 'lucide-react';
 
 interface NavbarProps {
   onScrollToSection: (section: 'hero' | 'workflow' | 'contact') => void;
@@ -8,6 +10,7 @@ interface NavbarProps {
 
 export const Navbar = ({ onScrollToSection }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user, logout, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +55,56 @@ export const Navbar = ({ onScrollToSection }: NavbarProps) => {
             >
               Contact
             </button>
+          </div>
+
+          {/* Auth buttons */}
+          <div className="hidden md:flex items-center space-x-4">
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
+                  <div className="p-1 bg-primary/10 rounded-full">
+                    <User className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="text-sm font-medium text-foreground">
+                    {user?.name}
+                  </span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.href = '/dashboard'}
+                  className="flex items-center space-x-1"
+                >
+                  <User className="w-4 h-4" />
+                  <span>Dashboard</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={logout}
+                  className="flex items-center space-x-1"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => window.location.href = '/auth'}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => window.location.href = '/auth'}
+                >
+                  Sign Up
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}

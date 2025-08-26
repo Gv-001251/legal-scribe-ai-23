@@ -49,10 +49,10 @@ const DocumentWizard = () => {
       {/* Header */}
       <div className="text-center mb-8">
         <h3 className="text-2xl font-semibold text-foreground mb-2">
-          Start Document Analysis
+          Document Verification & Authenticity Check
         </h3>
         <p className="text-muted-foreground">
-          Upload and analyze your legal documents in three simple steps
+          Verify the authenticity of your legal documents and detect potential fraud in three simple steps
         </p>
       </div>
 
@@ -91,7 +91,8 @@ const DocumentWizard = () => {
 
       {/* Footer */}
       <div className="text-center mt-8 text-sm text-muted-foreground">
-        <p>Your documents are processed securely and deleted after analysis</p>
+        <p>Your documents are processed securely and deleted after verification</p>
+        <p className="mt-1">All analysis is performed using advanced AI to detect fraud and tampering</p>
       </div>
     </div>
   );

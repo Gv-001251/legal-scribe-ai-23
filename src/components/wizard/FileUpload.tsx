@@ -102,8 +102,17 @@ export const FileUpload = ({
           Upload Your Document
         </h2>
         <p className="text-muted-foreground">
-          Upload your legal document for AI-powered verification and analysis
+          Upload your legal document for AI-powered verification and authenticity analysis
         </p>
+        <div className="mt-2 text-sm text-muted-foreground">
+          <p>Our AI will analyze your document to:</p>
+          <ul className="list-disc list-inside mt-1 space-y-1">
+            <li>Verify document authenticity and detect potential fraud</li>
+            <li>Check for tampering or alterations</li>
+            <li>Validate legal compliance and structure</li>
+            <li>Provide detailed analysis and recommendations</li>
+          </ul>
+        </div>
       </div>
 
       {!uploadedFile ? (
@@ -209,7 +218,7 @@ export const FileUpload = ({
           size="lg"
           className="px-8"
         >
-          Continue to Analysis
+          Continue to Document Verification
         </Button>
       </div>
     </div>
