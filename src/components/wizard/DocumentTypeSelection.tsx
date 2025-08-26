@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { FileText, Home, Heart, Shield, Briefcase, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import type { DocumentType } from '../DocumentWizard';
 
@@ -63,6 +66,13 @@ export const DocumentTypeSelection = ({
   onNext,
   canProceed,
 }: DocumentTypeSelectionProps) => {
+  const [customDocumentType, setCustomDocumentType] = useState('');
+
+  const handleOtherSelect = () => {
+    onSelect('other');
+  };
+
+  const isOtherSelected = selectedType === 'other';
   return (
     <div className="p-8">
       <div className="text-center mb-8">
@@ -89,7 +99,7 @@ export const DocumentTypeSelection = ({
                   "border-border hover:border-primary/50": !isSelected,
                 }
               )}
-              onClick={() => onSelect(docType.type)}
+              onClick={() => docType.type === 'other' ? handleOtherSelect() : onSelect(docType.type)}
             >
               <div className="flex items-start space-x-4">
                 <div
@@ -125,10 +135,28 @@ export const DocumentTypeSelection = ({
         })}
       </div>
 
+      {/* Custom Document Type Input for "Other" */}
+      {isOtherSelected && (
+        <div className="mb-8 animate-fade-in">
+          <Card className="p-6 border-primary/20 bg-primary/5">
+            <Label htmlFor="custom-doc-type" className="text-sm font-medium text-foreground mb-2 block">
+              Please specify the type of document:
+            </Label>
+            <Input
+              id="custom-doc-type"
+              placeholder="e.g., Power of Attorney, Mortgage Agreement, etc."
+              value={customDocumentType}
+              onChange={(e) => setCustomDocumentType(e.target.value)}
+              className="w-full"
+            />
+          </Card>
+        </div>
+      )}
+
       <div className="flex justify-center">
         <Button
           onClick={onNext}
-          disabled={!canProceed}
+          disabled={!canProceed || (isOtherSelected && !customDocumentType.trim())}
           size="lg"
           className="px-8"
         >
