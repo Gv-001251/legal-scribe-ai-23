@@ -312,5 +312,4 @@ class MockDocumentVerificationAPI {
 // Export singleton instance
 export const mockDocumentVerificationAPI = new MockDocumentVerificationAPI();
 
-// Export types for use in components
-export type { DocumentVerificationRequest, VerificationResult, AlterabilityAnalysis, ChatResponse };
+// Note: Types are already exported above as interfaces

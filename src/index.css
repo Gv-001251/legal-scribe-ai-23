@@ -2,12 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Legal-tech design system with professional colors and gradients */
+/* Modern hackathon-ready design system with beautiful gradients */
 
 @layer base {
   :root {
-    /* Core neutral palette */
-    --background: 0 0% 98%;
+    /* Modern gradient backgrounds */
+    --background: 243 100% 99%;
+    --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --background-animated: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
     --foreground: 225 15% 15%;
 
     /* Card and surface colors */
@@ -17,11 +19,11 @@
     --popover: 0 0% 100%;
     --popover-foreground: 225 15% 15%;
 
-    /* Primary brand colors - Professional navy */
-    --primary: 225 60% 25%;
-    --primary-foreground: 0 0% 98%;
-    --primary-light: 225 45% 35%;
-    --primary-lighter: 225 30% 50%;
+    /* Modern primary colors - Vibrant blue */
+    --primary: 220 100% 65%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 220 80% 75%;
+    --primary-lighter: 220 60% 85%;
 
     /* Secondary colors - Slate accents */
     --secondary: 220 13% 95%;
@@ -55,10 +57,11 @@
     --input: 220 13% 91%;
     --ring: 225 60% 25%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(225 60% 25%), hsl(225 45% 35%));
-    --gradient-accent: linear-gradient(135deg, hsl(215 85% 55%), hsl(215 70% 65%));
-    --gradient-surface: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 13% 97%));
+    /* Modern gradients */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-surface: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 75%, #f5576c 100%);
+    --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
 
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 hsl(225 15% 15% / 0.05);
@@ -134,6 +137,36 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--background-gradient);
+    min-height: 100vh;
+    background-attachment: fixed;
+  }
+
+  /* Animated gradient background */
+  .bg-animated-gradient {
+    background: var(--background-animated);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Glass morphism effect */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 }
