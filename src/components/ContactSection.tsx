@@ -15,31 +15,16 @@ export const ContactSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          <Card className="p-6 text-center">
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <Mail className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="font-semibold text-foreground mb-2">Email</h3>
-            <p className="text-muted-foreground">leagaldocreader.com</p>
-          </Card>
+<div className="flex justify-center max-w-4xl mx-auto">
+  <Card className="p-6 text-center">
+    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+      <Mail className="w-6 h-6 text-primary" />
+    </div>
+    <h3 className="font-semibold text-foreground mb-2">Email</h3>
+    <p className="text-muted-foreground">leagaldocreader.com</p>
+  </Card>
+</div>
 
-          <Card className="p-6 text-center">
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <Phone className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="font-semibold text-foreground mb-2">Phone</h3>
-            <p className="text-muted-foreground">+91 8056315859</p>
-          </Card>
-
-          <Card className="p-6 text-center">
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <MapPin className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="font-semibold text-foreground mb-2">Office</h3>
-            <p className="text-muted-foreground">Coimbatore, TN, IND</p>
-          </Card>
-        </div>
       </div>
     </section>
   );
