@@ -77,7 +77,7 @@ export default {
 				}
 			},
 			fontFamily: {
-				'inter': ['Inter', 'sans-serif'],
+				'poppins': ['Poppins', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -119,8 +119,8 @@ export default {
 			boxShadow: {
 				'wizard': 'var(--shadow-wizard)',
 				'soft': 'var(--shadow-md)',
-				'glow': '0 0 40px rgba(102, 126, 234, 0.3)',
-				'card': '0 8px 32px rgba(31, 38, 135, 0.37)'
+				'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+				'card': 'var(--shadow-wizard)'
 			},
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',

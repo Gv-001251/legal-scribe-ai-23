@@ -28,7 +28,7 @@ const Index = () => {
 
   if (showWorkflow) {
     return (
-      <div className="min-h-screen bg-animated-gradient">
+      <div className="min-h-screen bg-gradient-surface">
         <Navbar onScrollToSection={scrollToSection} />
         <div className="container mx-auto px-4 py-20">
           <DocumentWizard />

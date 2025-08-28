@@ -2,41 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Modern hackathon-ready design system with beautiful gradients */
+/* Modern dark hackathon-ready design system */
 
 @layer base {
   :root {
-    /* Modern gradient backgrounds */
-    --background: 243 100% 99%;
-    --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --background-animated: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
-    --foreground: 225 15% 15%;
+    /* Dark theme colors */
+    --background: 220 25% 8%;
+    --background-solid: #0d1b2a;
+    --foreground: 0 0% 95%;
 
     /* Card and surface colors */
-    --card: 0 0% 100%;
-    --card-foreground: 225 15% 15%;
+    --card: 220 25% 12%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 225 15% 15%;
+    --popover: 220 25% 12%;
+    --popover-foreground: 0 0% 95%;
 
-    /* Modern primary colors - Vibrant blue */
-    --primary: 220 100% 65%;
+    /* Primary accent - Professional blue */
+    --primary: 220 85% 55%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 220 80% 75%;
-    --primary-lighter: 220 60% 85%;
+    --primary-light: 220 75% 65%;
+    --primary-lighter: 220 65% 75%;
 
-    /* Secondary colors - Slate accents */
-    --secondary: 220 13% 95%;
-    --secondary-foreground: 225 15% 25%;
+    /* Secondary colors - Dark grays */
+    --secondary: 220 25% 15%;
+    --secondary-foreground: 0 0% 85%;
 
     /* Muted tones */
-    --muted: 220 13% 95%;
-    --muted-foreground: 225 8% 45%;
+    --muted: 220 25% 15%;
+    --muted-foreground: 0 0% 70%;
 
-    /* Accent colors - Legal blue */
-    --accent: 215 85% 55%;
-    --accent-foreground: 0 0% 98%;
-    --accent-light: 215 70% 65%;
+    /* Accent colors - Bright blue */
+    --accent: 220 85% 55%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 220 75% 65%;
 
     /* Success state */
     --success: 145 65% 42%;
@@ -53,21 +52,21 @@
     --destructive-foreground: 0 0% 98%;
 
     /* Border and input */
-    --border: 220 13% 88%;
-    --input: 220 13% 91%;
-    --ring: 225 60% 25%;
+    --border: 220 25% 20%;
+    --input: 220 25% 18%;
+    --ring: 220 85% 55%;
 
-    /* Modern gradients */
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --gradient-surface: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 75%, #f5576c 100%);
-    --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    /* Solid colors - no gradients */
+    --gradient-primary: hsl(220 85% 55%);
+    --gradient-accent: hsl(220 75% 65%);
+    --gradient-surface: hsl(220 25% 8%);
+    --gradient-card: hsl(220 25% 12%);
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(225 15% 15% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(225 15% 15% / 0.1), 0 2px 4px -1px hsl(225 15% 15% / 0.06);
-    --shadow-lg: 0 10px 15px -3px hsl(225 15% 15% / 0.1), 0 4px 6px -2px hsl(225 15% 15% / 0.05);
-    --shadow-wizard: 0 20px 25px -5px hsl(225 15% 15% / 0.1), 0 10px 10px -5px hsl(225 15% 15% / 0.04);
+    /* Dark theme shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.4), 0 2px 4px -1px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -2px hsl(0 0% 0% / 0.3);
+    --shadow-wizard: 0 25px 50px -12px hsl(0 0% 0% / 0.6);
 
     /* Animation */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -138,35 +137,47 @@
 
   body {
     @apply text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--background-gradient);
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--background-solid);
     min-height: 100vh;
-    background-attachment: fixed;
   }
 
-  /* Animated gradient background */
-  .bg-animated-gradient {
-    background: var(--background-animated);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
+  /* Modern card styling */
+  .modern-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-wizard);
   }
 
-  @keyframes gradientShift {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+  /* Hover effects */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Glass morphism effect */
-  .glass-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 32px 64px -12px hsl(0 0% 0% / 0.8);
+  }
+
+  /* Glow effect for buttons */
+  .btn-glow {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-glow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+
+  .btn-glow:hover::before {
+    transform: translateX(100%);
   }
 }

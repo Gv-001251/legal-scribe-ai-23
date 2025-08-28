@@ -48,10 +48,10 @@ const DocumentWizard = () => {
     <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
-        <h3 className="text-3xl font-bold text-white mb-2 font-inter">
+        <h3 className="text-3xl font-bold text-foreground mb-2 font-poppins">
           Document Verification & Authenticity Check
         </h3>
-        <p className="text-white/80 text-lg">
+        <p className="text-muted-foreground text-lg">
           Verify the authenticity of your legal documents and detect potential fraud in three simple steps
         </p>
       </div>
@@ -60,7 +60,7 @@ const DocumentWizard = () => {
       <WizardProgress currentStep={currentStep} totalSteps={3} className="mb-8" />
 
       {/* Main Content Card */}
-      <div className="glass-card shadow-card rounded-2xl border-0 overflow-hidden">
+      <div className="modern-card rounded-2xl border-0 overflow-hidden hover-lift">
         {currentStep === 1 && (
           <DocumentTypeSelection
             selectedType={selectedDocumentType}
@@ -90,7 +90,7 @@ const DocumentWizard = () => {
       </div>
 
       {/* Footer */}
-      <div className="text-center mt-8 text-sm text-white/70">
+      <div className="text-center mt-8 text-sm text-muted-foreground">
         <p>Your documents are processed securely and deleted after verification</p>
         <p className="mt-1">All analysis is performed using advanced AI to detect fraud and tampering</p>
       </div>
