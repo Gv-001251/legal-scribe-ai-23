@@ -57,20 +57,20 @@ export const VerificationResultsDetailed = ({
         {/* Main Status Card */}
         <Card className={cn(
           "p-6 border-2",
-          isAuthentic ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
+          isAuthentic ? "border-success/30 bg-success/10" : "border-destructive/30 bg-destructive/10"
         )}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               {isAuthentic ? (
-                <CheckCircle className="w-8 h-8 text-green-600" />
+                <CheckCircle className="w-8 h-8 text-success" />
               ) : (
-                <XCircle className="w-8 h-8 text-red-600" />
+                <XCircle className="w-8 h-8 text-destructive" />
               )}
               <div>
-                <h2 className="text-2xl font-bold">
+                <h2 className="text-2xl font-bold text-foreground">
                   {isAuthentic ? "✅ DOCUMENT IS LEGAL" : "❌ DOCUMENT IS NOT LEGAL"}
                 </h2>
-                <p className="text-lg font-medium">
+                <p className="text-lg font-medium text-muted-foreground">
                   {isAuthentic ? "Verified as Authentic" : "Potential Fraud Detected"}
                 </p>
               </div>
@@ -87,14 +87,14 @@ export const VerificationResultsDetailed = ({
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Shield className="w-5 h-5 text-primary" />
-                <span className="font-medium">Authenticity Score</span>
+                <span className="font-medium text-foreground">Authenticity Score</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Progress 
                   value={verificationResult.authenticityScore} 
                   className="flex-1"
                 />
-                <span className="text-lg font-bold">
+                <span className="text-lg font-bold text-foreground">
                   {verificationResult.authenticityScore}%
                 </span>
               </div>
@@ -103,14 +103,14 @@ export const VerificationResultsDetailed = ({
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <CheckCircle className="w-5 h-5 text-success" />
-                <span className="font-medium">Confidence Level</span>
+                <span className="font-medium text-foreground">Confidence Level</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Progress 
                   value={verificationResult.confidence} 
                   className="flex-1"
                 />
-                <span className="text-lg font-bold">
+                <span className="text-lg font-bold text-foreground">
                   {verificationResult.confidence}%
                 </span>
               </div>
@@ -120,7 +120,7 @@ export const VerificationResultsDetailed = ({
 
         {/* Summary */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-3">Analysis Summary</h3>
+          <h3 className="text-lg font-semibold mb-3 text-foreground">Analysis Summary</h3>
           <p className="text-muted-foreground text-lg leading-relaxed">{verificationResult.summary}</p>
         </Card>
 
@@ -134,7 +134,7 @@ export const VerificationResultsDetailed = ({
             </div>
             <ul className="space-y-2">
               {verificationResult.issues.map((issue, index) => (
-                <li key={index} className="text-sm text-destructive/80 flex items-start space-x-2">
+                <li key={index} className="text-sm text-foreground flex items-start space-x-2">
                   <span className="text-destructive mt-1">•</span>
                   <span>{issue}</span>
                 </li>
@@ -150,7 +150,7 @@ export const VerificationResultsDetailed = ({
             </div>
             <ul className="space-y-2">
               {verificationResult.recommendations.map((recommendation, index) => (
-                <li key={index} className="text-sm text-success/80 flex items-start space-x-2">
+                <li key={index} className="text-sm text-foreground flex items-start space-x-2">
                   <span className="text-success mt-1">•</span>
                   <span>{recommendation}</span>
                 </li>
@@ -171,26 +171,26 @@ export const VerificationResultsDetailed = ({
         {/* Main Status Card */}
         <Card className={cn(
           "p-6 border-2",
-          riskLevel === 'Low' ? "border-green-200 bg-green-50" : 
-          riskLevel === 'Medium' ? "border-yellow-200 bg-yellow-50" : 
-          "border-red-200 bg-red-50"
+          riskLevel === 'Low' ? "border-success/30 bg-success/10" : 
+          riskLevel === 'Medium' ? "border-warning/30 bg-warning/10" : 
+          "border-destructive/30 bg-destructive/10"
         )}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               {riskLevel === 'Low' ? (
-                <CheckCircle className="w-8 h-8 text-green-600" />
+                <CheckCircle className="w-8 h-8 text-success" />
               ) : riskLevel === 'Medium' ? (
-                <AlertTriangle className="w-8 h-8 text-yellow-600" />
+                <AlertTriangle className="w-8 h-8 text-warning" />
               ) : (
-                <XCircle className="w-8 h-8 text-red-600" />
+                <XCircle className="w-8 h-8 text-destructive" />
               )}
               <div>
-                <h2 className="text-2xl font-bold">
+                <h2 className="text-2xl font-bold text-foreground">
                   {riskLevel === 'Low' ? "✅ NO TAMPERING DETECTED" : 
                    riskLevel === 'Medium' ? "⚠️ MINOR TAMPERING RISK" : 
                    "🚨 TAMPERING DETECTED"}
                 </h2>
-                <p className="text-lg font-medium">
+                <p className="text-lg font-medium text-muted-foreground">
                   {riskLevel === 'Low' ? "Document is Authentic" : 
                    riskLevel === 'Medium' ? "Some Modifications Found" : 
                    "Document Has Been Altered"}
@@ -208,7 +208,7 @@ export const VerificationResultsDetailed = ({
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Detection Confidence</span>
-              <span className="text-lg font-bold">{alterabilityResult.confidence}%</span>
+              <span className="text-lg font-bold text-foreground">{alterabilityResult.confidence}%</span>
             </div>
             <Progress value={alterabilityResult.confidence} />
           </div>
@@ -216,17 +216,17 @@ export const VerificationResultsDetailed = ({
 
         {/* Summary */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-3">Technical Analysis Summary</h3>
+          <h3 className="text-lg font-semibold mb-3 text-foreground">Technical Analysis Summary</h3>
           <p className="text-muted-foreground text-lg leading-relaxed">{alterabilityResult.summary}</p>
         </Card>
 
         {/* Detailed Findings */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Detailed Technical Findings</h3>
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Detailed Technical Findings</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {alterabilityResult.findings.map((finding, index) => (
               <div key={index} className="flex items-start space-x-2 p-3 bg-muted/30 rounded-lg">
-                <span className="text-sm">{finding}</span>
+                <span className="text-sm text-foreground">{finding}</span>
               </div>
             ))}
           </div>
@@ -234,17 +234,17 @@ export const VerificationResultsDetailed = ({
 
         {/* Technical Details */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Technical Validation</h3>
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Technical Validation</h3>
           <div className="grid grid-cols-2 gap-4">
             {Object.entries(alterabilityResult.technicalDetails).map(([key, value]) => (
               <div key={key} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                <span className="text-sm font-medium capitalize">
+                <span className="text-sm font-medium capitalize text-foreground">
                   {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
                 </span>
                 {value ? (
-                  <Check className="w-5 h-5 text-green-600" />
+                  <Check className="w-5 h-5 text-success" />
                 ) : (
-                  <X className="w-5 h-5 text-red-600" />
+                  <X className="w-5 h-5 text-destructive" />
                 )}
               </div>
             ))}
