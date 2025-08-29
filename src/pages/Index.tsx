@@ -1,26 +1,14 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import DocumentWizard from '@/components/DocumentWizard';
-import { HeroSection } from '@/components/HeroSection';
-import { Navbar } from '@/components/Navbar';
-import { ContactSection } from '@/components/ContactSection';
+import { BrandNavbar } from '@/components/brand/Navbar';
+import { BrandHeroSection } from '@/components/brand/HeroSection';
+import { FeaturesSection } from '@/components/brand/FeaturesSection';
+import { CaseStudiesSection } from '@/components/brand/CaseStudiesSection';
+import { CTASection } from '@/components/brand/CTASection';
+import { Footer } from '@/components/brand/Footer';
 
 const Index = () => {
   const [showWorkflow, setShowWorkflow] = useState(false);
-  const contactRef = useRef<HTMLDivElement>(null);
-
-  const scrollToSection = (section: 'hero' | 'workflow' | 'contact') => {
-    if (section === 'hero') {
-      setShowWorkflow(false);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else if (section === 'workflow') {
-      setShowWorkflow(true);
-    } else if (section === 'contact') {
-      contactRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  };
 
   const handleGetStarted = () => {
     setShowWorkflow(true);
@@ -28,9 +16,9 @@ const Index = () => {
 
   if (showWorkflow) {
     return (
-      <div className="min-h-screen bg-gradient-surface">
-        <Navbar onScrollToSection={scrollToSection} />
-        <div className="container mx-auto px-4 py-20">
+      <div className="min-h-screen bg-background">
+        <BrandNavbar onGetStarted={handleGetStarted} />
+        <div className="container mx-auto px-6 py-32">
           <DocumentWizard />
         </div>
       </div>
@@ -38,13 +26,13 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar onScrollToSection={scrollToSection} />
-      <HeroSection onGetStarted={handleGetStarted} />
-      
-      <div ref={contactRef}>
-        <ContactSection />
-      </div>
+    <div className="min-h-screen bg-background">
+      <BrandNavbar onGetStarted={handleGetStarted} />
+      <BrandHeroSection onGetStarted={handleGetStarted} />
+      <FeaturesSection />
+      <CaseStudiesSection />
+      <CTASection onGetStarted={handleGetStarted} />
+      <Footer />
     </div>
   );
 };

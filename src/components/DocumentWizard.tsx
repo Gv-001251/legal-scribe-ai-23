@@ -47,20 +47,20 @@ const DocumentWizard = () => {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h3 className="text-3xl font-bold text-foreground mb-2 font-poppins">
-          Document Verification & Authenticity Check
+      <div className="text-center mb-12">
+        <h3 className="text-4xl md:text-5xl font-bold text-foreground mb-4 font-inter">
+          Document Verification & Analysis
         </h3>
-        <p className="text-muted-foreground text-lg">
-          Verify the authenticity of your legal documents and detect potential fraud in three simple steps
+        <p className="text-muted-foreground text-xl leading-relaxed max-w-3xl mx-auto">
+          Verify the authenticity of your legal documents and detect potential fraud with our AI-powered analysis
         </p>
       </div>
 
       {/* Progress Indicator */}
-      <WizardProgress currentStep={currentStep} totalSteps={3} className="mb-8" />
+      <WizardProgress currentStep={currentStep} totalSteps={3} className="mb-12" />
 
       {/* Main Content Card */}
-      <div className="modern-card rounded-2xl border-0 overflow-hidden hover-lift">
+      <div className="brand-card rounded-3xl border-0 overflow-hidden">
         {currentStep === 1 && (
           <DocumentTypeSelection
             selectedType={selectedDocumentType}
@@ -90,9 +90,14 @@ const DocumentWizard = () => {
       </div>
 
       {/* Footer */}
-      <div className="text-center mt-8 text-sm text-muted-foreground">
-        <p>Your documents are processed securely and deleted after verification</p>
-        <p className="mt-1">All analysis is performed using advanced AI to detect fraud and tampering</p>
+      <div className="text-center mt-12 space-y-2">
+        <div className="flex items-center justify-center space-x-2 text-success text-sm">
+          <div className="w-2 h-2 bg-success rounded-full"></div>
+          <span>Enterprise-grade security & encryption</span>
+        </div>
+        <p className="text-muted-foreground text-sm">
+          All documents are processed securely and automatically deleted after analysis
+        </p>
       </div>
     </div>
   );

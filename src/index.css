@@ -2,77 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Modern dark hackathon-ready design system */
+/* Behance-style Brand Identity Design System */
 
 @layer base {
   :root {
-    /* Dark theme colors */
-    --background: 220 25% 8%;
-    --background-solid: #0d1b2a;
-    --foreground: 0 0% 95%;
+    /* Core brand colors - Dark theme */
+    --background: 0 0% 4%;
+    --background-solid: #0a0a0a;
+    --foreground: 0 0% 98%;
 
     /* Card and surface colors */
-    --card: 220 25% 12%;
-    --card-foreground: 0 0% 95%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 220 25% 12%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Primary accent - Professional blue */
-    --primary: 220 85% 55%;
+    /* Primary brand - Professional teal */
+    --primary: 189 75% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 220 75% 65%;
-    --primary-lighter: 220 65% 75%;
+    --primary-light: 189 65% 60%;
+    --primary-dark: 189 85% 40%;
 
-    /* Secondary colors - Dark grays */
-    --secondary: 220 25% 15%;
-    --secondary-foreground: 0 0% 85%;
+    /* Secondary colors - Refined grays */
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 90%;
 
-    /* Muted tones */
-    --muted: 220 25% 15%;
-    --muted-foreground: 0 0% 70%;
+    /* Muted tones for subtle elements */
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    /* Accent colors - Bright blue */
-    --accent: 220 85% 55%;
+    /* Accent colors - Brand teal */
+    --accent: 189 75% 50%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 220 75% 65%;
+    --accent-light: 189 55% 70%;
 
-    /* Success state */
-    --success: 145 65% 42%;
-    --success-foreground: 0 0% 98%;
-    --success-light: 145 50% 95%;
+    /* Status colors */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --success-light: 142 50% 95%;
 
-    /* Warning state */
-    --warning: 35 90% 55%;
-    --warning-foreground: 0 0% 98%;
-    --warning-light: 35 70% 95%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --warning-light: 38 70% 95%;
 
-    /* Destructive state */
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Border and input */
-    --border: 220 25% 20%;
-    --input: 220 25% 18%;
-    --ring: 220 85% 55%;
+    /* Interactive elements */
+    --border: 0 0% 20%;
+    --input: 0 0% 12%;
+    --ring: 189 75% 50%;
 
-    /* Solid colors - no gradients */
-    --gradient-primary: hsl(220 85% 55%);
-    --gradient-accent: hsl(220 75% 65%);
-    --gradient-surface: hsl(220 25% 8%);
-    --gradient-card: hsl(220 25% 12%);
+    /* Professional shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.4);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.5), 0 2px 4px -1px hsl(0 0% 0% / 0.4);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.6), 0 4px 6px -2px hsl(0 0% 0% / 0.5);
+    --shadow-brand: 0 20px 40px -8px hsl(189 75% 50% / 0.3);
 
-    /* Dark theme shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
-    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.4), 0 2px 4px -1px hsl(0 0% 0% / 0.3);
-    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -2px hsl(0 0% 0% / 0.3);
-    --shadow-wizard: 0 25px 50px -12px hsl(0 0% 0% / 0.6);
-
-    /* Animation */
+    /* Animation timing */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -136,48 +129,97 @@
   }
 
   body {
-    @apply text-foreground;
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    @apply text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--background-solid);
     min-height: 100vh;
+    line-height: 1.6;
   }
 
-  /* Modern card styling */
-  .modern-card {
+  /* Brand card styling */
+  .brand-card {
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    box-shadow: var(--shadow-wizard);
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition-smooth);
   }
 
-  /* Hover effects */
-  .hover-lift {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  .brand-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-brand);
   }
 
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 32px 64px -12px hsl(0 0% 0% / 0.8);
-  }
-
-  /* Glow effect for buttons */
-  .btn-glow {
+  /* Hero section styling */
+  .hero-section {
+    background: var(--background-solid);
     position: relative;
-    overflow: hidden;
   }
 
-  .btn-glow::before {
+  .hero-section::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.6s;
+    background: radial-gradient(circle at 50% 50%, hsl(189 75% 50% / 0.05) 0%, transparent 50%);
+    pointer-events: none;
   }
 
-  .btn-glow:hover::before {
-    transform: translateX(100%);
+  /* Button enhancements */
+  .btn-primary {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    transition: var(--transition-spring);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary:hover {
+    background: hsl(var(--primary-dark));
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px -8px hsl(var(--primary) / 0.6);
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+
+  /* Section animations */
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Grid layouts */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .case-study-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 3rem;
   }
 }
