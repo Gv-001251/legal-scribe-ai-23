@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { useMockDocumentVerification } from '@/hooks/useMockDocumentVerification';
+import { useDocumentVerification } from '@/hooks/useDocumentVerification';
 import { VerificationResultsDetailed } from './VerificationResultsDetailed';
 import type { DocumentType, UploadedFile } from '../DocumentWizard';
 
@@ -58,7 +58,7 @@ export const TaskDashboard = ({ documentType, uploadedFile, onBack }: TaskDashbo
   });
   const [chatMessage, setChatMessage] = useState('');
   
-  // Use the mock document verification hook
+  // Use the real document verification hook
   const {
     isLoading,
     error,
@@ -71,13 +71,16 @@ export const TaskDashboard = ({ documentType, uploadedFile, onBack }: TaskDashbo
     clearError,
     resetResults,
     clearChatHistory,
-  } = useMockDocumentVerification();
+  } = useDocumentVerification();
 
   const runTask = async (taskId: TaskType) => {
     if (!uploadedFile) {
       console.error('No file uploaded');
       return;
     }
+
+    // Get the actual File object from uploadedFile
+    const file = uploadedFile.file;
 
     setActiveTask(taskId);
     setTaskResults(prev => ({
@@ -89,8 +92,12 @@ export const TaskDashboard = ({ documentType, uploadedFile, onBack }: TaskDashbo
       clearError();
       
       if (taskId === 'verify') {
-        console.log('Starting document verification...');
-        await verifyDocument(uploadedFile as any, documentType || 'other');
+        console.log('Starting document verification...', {
+          fileName: uploadedFile.name,
+          fileType: uploadedFile.type,
+          documentType: documentType
+        });
+        await verifyDocument(file, documentType || 'other');
         console.log('Document verification completed');
         setTaskResults(prev => ({
           ...prev,
@@ -98,7 +105,7 @@ export const TaskDashboard = ({ documentType, uploadedFile, onBack }: TaskDashbo
         }));
       } else if (taskId === 'analyze') {
         console.log('Starting alterability analysis...');
-        await analyzeAlterability(uploadedFile as any);
+        await analyzeAlterability(uploadedFile.file);
         console.log('Alterability analysis completed');
         setTaskResults(prev => ({
           ...prev,
@@ -123,7 +130,7 @@ export const TaskDashboard = ({ documentType, uploadedFile, onBack }: TaskDashbo
     if (!chatMessage.trim() || !uploadedFile) return;
 
     try {
-      await sendChatMessage(uploadedFile as any, chatMessage);
+      await sendChatMessage(uploadedFile.file, chatMessage);
       setChatMessage('');
     } catch (err) {
       console.error('Chat submission failed:', err);

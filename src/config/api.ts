@@ -13,16 +13,18 @@ export const API_CONFIG = {
     SUMMARIZE: '/summarize',
   },
   
-  // Request timeout in milliseconds
-  TIMEOUT: 30000,
+  // Request settings
+  TIMEOUT: 60000, // 60 seconds for longer operations
+  UPLOAD_TIMEOUT: 30000, // 30 seconds for uploads
   
   // File upload settings
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
-  ALLOWED_FILE_TYPES: ['.pdf', '.docx', '.txt'],
+  ALLOWED_FILE_TYPES: ['.pdf', '.docx', '.txt', '.doc', '.rtf'],
   
   // Retry settings
   MAX_RETRIES: 3,
-  RETRY_DELAY: 1000,
+  RETRY_DELAY: 2000, // 2 seconds between retries
+  RETRY_BACKOFF_FACTOR: 1.5, // Exponential backoff
 };
 
 // Helper function to get full API URL

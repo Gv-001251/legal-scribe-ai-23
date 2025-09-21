@@ -1,6 +1,7 @@
 // API service for document verification
 import { API_CONFIG, getApiUrl } from '@/config/api';
 
+// Define API response types
 export interface DocumentVerificationRequest {
   file: File;
   documentType: string;
@@ -49,7 +50,7 @@ export interface ChatResponse {
   sources: string[];
 }
 
-class DocumentVerificationAPI {
+export class DocumentVerificationAPI {
   private baseURL: string;
 
   constructor() {
@@ -61,30 +62,68 @@ class DocumentVerificationAPI {
     options: RequestInit = {}
   ): Promise<T> {
     const url = getApiUrl(endpoint);
+    const isUpload = endpoint === API_CONFIG.ENDPOINTS.UPLOAD;
+    const timeout = isUpload ? API_CONFIG.UPLOAD_TIMEOUT : API_CONFIG.TIMEOUT;
     
-    try {
-      const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
-        ...options,
-      });
+    // Initialize retry count
+    let retryCount = 0;
+    let lastError: Error | null = null;
+    
+    while (retryCount <= API_CONFIG.MAX_RETRIES) {
+      try {
+        // Create abort controller for timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        
+        console.log(`Making request to ${endpoint} (attempt ${retryCount + 1}/${API_CONFIG.MAX_RETRIES + 1})`);
+        
+        const response = await fetch(url, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+          },
+          signal: controller.signal,
+          ...options,
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.detail || 
-          errorData.message || 
-          `HTTP error! status: ${response.status}`
-        );
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(
+            errorData.detail || 
+            errorData.message || 
+            `HTTP error! status: ${response.status}`
+          );
+        }
+
+        const data = await response.json();
+        console.log(`Request to ${endpoint} successful:`, data);
+        return data;
+        
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        console.error(`Request attempt ${retryCount + 1} failed:`, lastError);
+        
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.error('Request timed out after', timeout, 'ms');
+        }
+        
+        // Check if we should retry
+        if (retryCount < API_CONFIG.MAX_RETRIES) {
+          const delay = API_CONFIG.RETRY_DELAY * Math.pow(API_CONFIG.RETRY_BACKOFF_FACTOR, retryCount);
+          console.log(`Retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          retryCount++;
+        } else {
+          console.error('Max retries reached. Giving up.');
+          throw new Error(`Request failed after ${API_CONFIG.MAX_RETRIES + 1} attempts: ${lastError.message}`);
+        }
       }
-
-      return await response.json();
-    } catch (error) {
-      console.error('API request failed:', error);
-      throw error;
     }
+    
+    // This should never happen due to the throw above, but TypeScript needs it
+    throw lastError || new Error('Request failed');
   }
 
   private async uploadFile(file: File): Promise<string> {
@@ -164,19 +203,46 @@ class DocumentVerificationAPI {
     chatHistory: Array<{ role: 'user' | 'ai'; message: string }> = []
   ): Promise<ChatResponse> {
     try {
-      const fileId = await this.uploadFile(file);
+      console.log('Starting chat request for file:', file.name);
+      console.log('Message:', message);
+      console.log('Chat history length:', chatHistory.length);
 
-      return await this.makeRequest<ChatResponse>(API_CONFIG.ENDPOINTS.CHAT, {
+      // Upload file first
+      console.log('Uploading file...');
+      const fileId = await this.uploadFile(file);
+      console.log('File uploaded successfully, file_id:', fileId);
+
+      // Prepare request body
+      const requestBody = {
+        file_id: fileId,
+        message,
+        chat_history: chatHistory,
+      };
+      console.log('Sending chat request with body:', requestBody);
+
+      // Make the chat request
+      const response = await this.makeRequest<ChatResponse>(API_CONFIG.ENDPOINTS.CHAT, {
         method: 'POST',
-        body: JSON.stringify({
-          file_id: fileId,
-          message,
-          chat_history: chatHistory,
-        }),
+        body: JSON.stringify(requestBody),
       });
+
+      console.log('Chat response received:', response);
+      return response;
     } catch (error) {
       console.error('Chat request failed:', error);
-      throw error;
+      // Enhanced error handling
+      if (error instanceof Error) {
+        console.error('Error details:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        });
+      }
+      throw new Error(
+        error instanceof Error 
+          ? `Chat failed: ${error.message}`
+          : 'Chat request failed due to an unknown error'
+      );
     }
   }
 

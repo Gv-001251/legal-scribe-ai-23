@@ -47,6 +47,15 @@ export const FileUpload = ({
       setUploadError(error);
       return;
     }
+    
+    // Create UploadedFile object with the actual File object
+    const uploadedFile: UploadedFile = {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      lastModified: file.lastModified,
+      file: file
+    };
 
     setUploadError(null);
     onFileUpload({
@@ -54,6 +63,7 @@ export const FileUpload = ({
       size: file.size,
       type: file.type,
       lastModified: file.lastModified,
+      file: file
     });
   }, [onFileUpload]);
 

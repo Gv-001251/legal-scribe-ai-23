@@ -1,6 +1,5 @@
 """
-Example FastAPI backend for document verification
-This is a basic structure to get you started with the NLP document verification API.
+FastAPI backend for document verification with OpenAI integration
 """
 
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
@@ -11,6 +10,7 @@ import uuid
 import os
 from datetime import datetime
 import logging
+from services.openai_service import OpenAIService
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -18,20 +18,31 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Document Verification API", version="1.0.0")
 
-# CORS middleware
+# Initialize OpenAI service
+openai_service = OpenAIService()
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+app = FastAPI(title="Document Verification API", version="1.0.0")
+
+# CORS middleware with detailed configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173", 
-        "http://localhost:3000", 
-        "http://localhost:8080",
-        "http://localhost:8081", 
-        "http://localhost:8082",
-        "http://localhost:8083"
-    ],  # Add your frontend URLs
+    allow_origins=["*"],  # Allow all origins in development
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=[
+        "Content-Type",
+        "Authorization",
+        "Access-Control-Allow-Origin",
+        "Access-Control-Allow-Methods",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Credentials"
+    ],
+    expose_headers=["*"],
+    max_age=3600  # Cache preflight requests for 1 hour
 )
 
 # In-memory storage for demo (use database in production)
@@ -195,26 +206,84 @@ async def analyze_alterability(request: AlterabilityRequest):
 # Chat endpoint
 @app.post("/chat")
 async def chat_with_document(request: ChatRequest):
+    logger.info(f"Received chat request for file_id: {request.file_id}")
+    logger.info(f"Message: {request.message[:100]}...")  # Log first 100 chars of message
+    
     try:
+        # Validate file exists
         if request.file_id not in uploaded_files:
+            logger.error(f"File not found: {request.file_id}")
             raise HTTPException(status_code=404, detail="File not found")
         
-        # TODO: Implement actual document chat logic here
-        # This is a mock response - replace with your NLP chat logic
+        # Get file content and info
+        file_info = uploaded_files[request.file_id]
+        file_content = file_info["content"]
+        logger.info(f"Retrieved file. Size: {len(file_content)} bytes, Type: {file_info['content_type']}")
         
-        # Mock chat response
-        chat_response = {
-            "response": f"Based on your document, I can help you understand the content. You asked: '{request.message}'. This appears to be a legal document with standard clauses and formatting.",
-            "confidence": 92,
-            "sources": ["document_content", "legal_database"]
-        }
+        # Decode binary content to text
+        try:
+            logger.info("Attempting UTF-8 decode...")
+            document_text = file_content.decode('utf-8')
+        except UnicodeDecodeError:
+            logger.warning("UTF-8 decode failed, trying latin-1")
+            try:
+                document_text = file_content.decode('latin-1')
+            except:
+                logger.error("All decoding attempts failed")
+                raise HTTPException(
+                    status_code=400, 
+                    detail="Unable to process the document content. Please ensure it's a valid text document."
+                )
         
-        return chat_response
+        logger.info(f"Successfully decoded file content. Length: {len(document_text)}")
         
-    except HTTPException:
+        # Use OpenAI service for chat
+        logger.info("Sending request to OpenAI service...")
+        try:
+            chat_response = await openai_service.chat_with_document(
+                document_text=document_text,
+                user_message=request.message,
+                chat_history=request.chat_history
+            )
+            
+            if chat_response.get("sources") == ["mock_response"]:
+                logger.info("Using mock response due to API limitations")
+                # Still return 200 since we have a valid fallback response
+                return chat_response
+            
+            logger.info("Received response from OpenAI service")
+            return chat_response
+            
+        except Exception as openai_error:
+            error_msg = str(openai_error)
+            logger.error(f"OpenAI service error: {error_msg}")
+            
+            if "insufficient_quota" in error_msg or "exceeded your current quota" in error_msg:
+                # Return a user-friendly message
+                raise HTTPException(
+                    status_code=503,
+                    detail="AI service is currently unavailable. Using alternative response method."
+                )
+            elif "rate_limit" in error_msg:
+                raise HTTPException(
+                    status_code=429,
+                    detail="Too many requests. Please try again in a few moments."
+                )
+            else:
+                raise HTTPException(
+                    status_code=500,
+                    detail="Unable to process your request at this time. Please try again later."
+                )
+        
+    except HTTPException as http_ex:
+        logger.error(f"HTTP Exception in chat endpoint: {http_ex.detail}")
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Chat request failed: {str(e)}")
+        logger.error(f"Unexpected error in chat endpoint: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail="An unexpected error occurred. Our team has been notified."
+        )
 
 # Document summary endpoint
 @app.post("/summarize")

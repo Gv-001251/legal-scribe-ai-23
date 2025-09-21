@@ -17,6 +17,7 @@ export interface UploadedFile {
   size: number;
   type: string;
   lastModified: number;
+  file: File; // Store the actual File object
 }
 
 const DocumentWizard = () => {

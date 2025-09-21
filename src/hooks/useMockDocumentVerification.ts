@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
-import { mockDocumentVerificationAPI, type VerificationResult, type AlterabilityAnalysis, type ChatResponse } from '@/services/mockApi';
+import { mockDocumentVerificationAPI, VerificationResult, ChatResponse } from '@/services/mockApi';
+import { AlterabilityAnalysis } from '@/services/types';
 
 export interface UseMockDocumentVerificationReturn {
   // States
