@@ -30,7 +30,12 @@ app = FastAPI(title="Document Verification API", version="1.0.0")
 # CORS middleware with detailed configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins in development
+    allow_origins=[
+        "http://localhost:5173",  # Local development
+        "http://localhost:3000",
+        "https://your-netlify-app.netlify.app",  # Replace with your Netlify domain
+        "https://*.netlify.app",  # Allow Netlify preview deployments
+    ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=[
