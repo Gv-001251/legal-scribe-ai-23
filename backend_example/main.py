@@ -13,29 +13,47 @@ import logging
 from services.openai_service import OpenAIService
 
 # Set up logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Document Verification API", version="1.0.0")
+# Load environment variables
+load_dotenv()
+
+# Initialize FastAPI with configuration
+app = FastAPI(
+    title="Document Verification API",
+    version="1.0.0",
+    docs_url="/docs" if os.getenv("DEBUG", "False").lower() == "true" else None,
+    redoc_url="/redoc" if os.getenv("DEBUG", "False").lower() == "true" else None
+)
 
 # Initialize OpenAI service
-openai_service = OpenAIService()
+try:
+    openai_service = OpenAIService()
+    logger.info("OpenAI service initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize OpenAI service: {str(e)}")
+    raise
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# CORS middleware with production configuration
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
+if not allowed_origins or allowed_origins == [""]:
+    # Default origins if not specified
+    allowed_origins = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://legal-scribe-ai-23.netlify.app",
+        "https://*.netlify.app"
+    ]
 
-app = FastAPI(title="Document Verification API", version="1.0.0")
+logger.info(f"Configuring CORS with allowed origins: {allowed_origins}")
 
-# CORS middleware with detailed configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",  # Local development
-        "http://localhost:3000",
-        "https://your-netlify-app.netlify.app",  # Replace with your Netlify domain
-        "https://*.netlify.app",  # Allow Netlify preview deployments
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=[
@@ -47,7 +65,7 @@ app.add_middleware(
         "Access-Control-Allow-Credentials"
     ],
     expose_headers=["*"],
-    max_age=3600  # Cache preflight requests for 1 hour
+    max_age=3600
 )
 
 # In-memory storage for demo (use database in production)
