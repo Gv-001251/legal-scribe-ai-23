@@ -10,6 +10,7 @@ import uuid
 import os
 from datetime import datetime
 import logging
+from dotenv import load_dotenv
 from services.openai_service import OpenAIService
 
 # Set up logging
@@ -45,6 +46,9 @@ if not allowed_origins or allowed_origins == [""]:
     allowed_origins = [
         "http://localhost:5173",
         "http://localhost:3000",
+        "http://localhost:8081",
+        "http://localhost:8082",
+        "http://localhost:8083",
         "https://legal-scribe-ai-23.netlify.app",
         "https://*.netlify.app"
     ]

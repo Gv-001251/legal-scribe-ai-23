@@ -58,17 +58,17 @@ export const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-center text-muted-foreground">
                 <Mail className="w-4 h-4 mr-3 text-primary" />
-                contact@legalverify.com
+                glitchstudio@gmail.com
               </li>
               <li className="flex items-center text-muted-foreground">
                 <Phone className="w-4 h-4 mr-3 text-primary" />
-                +1 (555) 123-4567
+                +91 80563 15859
               </li>
               <li className="flex items-start text-muted-foreground">
                 <MapPin className="w-4 h-4 mr-3 text-primary mt-1 flex-shrink-0" />
                 <span>
-                  123 Legal Street<br />
-                  San Francisco, CA 94105
+                 <br />
+                
                 </span>
               </li>
             </ul>
